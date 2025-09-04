@@ -304,7 +304,21 @@ class FeedbackUI:
             self.command_frame.pack_forget()
             self.toggle_command_button.config(text="Show Command Section")
         else:
-            self.command_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10), before=self.root.winfo_children()[-2])
+            # Find the feedback frame to pack before it
+            feedback_frame = None
+            for child in self.root.winfo_children():
+                if hasattr(child, 'winfo_children'):
+                    for grandchild in child.winfo_children():
+                        if isinstance(grandchild, ttk.LabelFrame) and grandchild.cget('text') == 'Feedback':
+                            feedback_frame = grandchild
+                            break
+                if feedback_frame:
+                    break
+            
+            if feedback_frame:
+                self.command_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10), before=feedback_frame)
+            else:
+                self.command_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
             self.toggle_command_button.config(text="Hide Command Section")
         
         # Save visibility state immediately
