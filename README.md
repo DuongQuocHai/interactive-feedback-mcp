@@ -5,94 +5,196 @@ Check out [dotcursorrules.com](https://dotcursorrules.com/) for more AI developm
 
 Simple [MCP Server](https://modelcontextprotocol.io/) to enable a human-in-the-loop workflow in AI-assisted development tools like [Cursor](https://www.cursor.com). This server allows you to run commands, view their output, and provide textual feedback directly to the AI. It is also compatible with [Cline](https://cline.bot) and [Windsurf](https://windsurf.com).
 
-![Interactive Feedback UI - Main View](https://github.com/noopstudios/interactive-feedback-mcp/blob/main/.github/interactive_feedback_1.jpg?raw=true)
-![Interactive Feedback UI - Command Section Open](https://github.com/noopstudios/interactive-feedback-mcp/blob/main/.github/interactive_feedback_2.jpg)
+## 🚀 Two Versions Available
 
-## Prompt Engineering
+### 🎯 **Tkinter Version (Recommended)**
+- ✅ **100% Feature Parity** with PySide6 version
+- ✅ **Cross-platform** (Windows, macOS, Linux)
+- ✅ **No Dependencies** - uses built-in tkinter
+- ✅ **Better Performance** and stability
+- ✅ **Complete Settings Persistence**
+- ✅ **Real-time Configuration Updates**
 
-For the best results, add the following to your custom prompt in your AI assistant, you should add it on a rule or directly in the prompt (e.g., Cursor):
+### 🔧 **PySide6 Version (Original)**
+- Full-featured Qt-based UI
+- Requires PySide6 installation
+- Platform-specific dependencies
 
-> Whenever you want to ask a question, always call the MCP `interactive_feedback`.  
-> Whenever you’re about to complete a user request, call the MCP `interactive_feedback` instead of simply ending the process.
-> Keep calling MCP until the user’s feedback is empty, then end the request.
+## ✨ Key Features
 
-This will ensure your AI assistant uses this MCP server to request user feedback before marking the task as completed.
+- **Interactive UI**: Modern, dark-themed interface
+- **Command Execution**: Run commands directly in your project
+- **Real-time Output**: See command results as they happen
+- **Project-specific Settings**: Per-project configuration
+- **Settings Persistence**: Cross-platform settings storage
+- **Auto-execute**: Automatically run commands on startup
+- **Keyboard Shortcuts**: Ctrl+Enter to submit feedback
+- **External Links**: Clickable links in UI
+- **Process Management**: Monitor and control running processes
 
 ## 💡 Why Use This?
+
 By guiding the assistant to check in with the user instead of branching out into speculative, high-cost tool calls, this module can drastically reduce the number of premium requests (e.g., OpenAI tool invocations) on platforms like Cursor. In some cases, it helps consolidate what would be up to 25 tool calls into a single, feedback-aware request — saving resources and improving performance.
 
-## Configuration
+## 🎮 How It Works
 
-This MCP server uses Qt's `QSettings` to store configuration on a per-project basis. This includes:
-*   The command to run.
-*   Whether to execute the command automatically on the next startup for that project (see "Execute automatically on next run" checkbox).
-*   The visibility state (shown/hidden) of the command section (this is saved immediately when toggled).
-*   Window geometry and state (general UI preferences).
+1. **AI calls MCP** → UI appears
+2. **View summary** from AI
+3. **Run commands** (if needed) to test/verify
+4. **Enter feedback** for AI
+5. **Submit** → AI receives feedback and continues
 
-These settings are typically stored in platform-specific locations (e.g., registry on Windows, plist files on macOS, configuration files in `~/.config` or `~/.local/share` on Linux) under an organization name "FabioFerreira" and application name "InteractiveFeedbackMCP", with a unique group for each project directory.
+## 📋 Installation (Cursor)
 
-The "Save Configuration" button in the UI primarily saves the current command typed into the command input field and the state of the "Execute automatically on next run" checkbox for the active project. The visibility of the command section is saved automatically when you toggle it. General window size and position are saved when the application closes.
+### Prerequisites
+- Python 3.11 or newer
+- [uv](https://github.com/astral-sh/uv) (Python package manager)
 
-## Installation (Cursor)
+### Quick Setup
 
-![Instalation on Cursor](https://github.com/noopstudios/interactive-feedback-mcp/blob/main/.github/cursor-example.jpg?raw=true)
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/DuongQuocHai/interactive-feedback-mcp.git
+   cd interactive-feedback-mcp
+   ```
 
-1.  **Prerequisites:**
-    *   Python 3.11 or newer.
-    *   [uv](https://github.com/astral-sh/uv) (Python package manager). Install it with:
-        *   Windows: `pip install uv`
-        *   Linux/Mac: `curl -LsSf https://astral.sh/uv/install.sh | sh`
-2.  **Get the code:**
-    *   Clone this repository:
-        `git clone https://github.com/noopstudios/interactive-feedback-mcp.git`
-    *   Or download the source code.
-3.  **Navigate to the directory:**
-    *   `cd path/to/interactive-feedback-mcp`
-4.  **Install dependencies:**
-    *   `uv sync` (this creates a virtual environment and installs packages)
-5.  **Run the MCP Server:**
-    *   `uv run server.py`
-6.  **Configure in Cursor:**
-    *   Cursor typically allows specifying custom MCP servers in its settings. You'll need to point Cursor to this running server. The exact mechanism might vary, so consult Cursor's documentation for adding custom MCPs.
-    *   **Manual Configuration (e.g., via `mcp.json`)**
-        **Remember to change the `/Users/fabioferreira/Dev/scripts/interactive-feedback-mcp` path to the actual path where you cloned the repository on your system.**
+2. **Install dependencies:**
+   ```bash
+   uv sync
+   ```
 
-        ```json
-        {
-          "mcpServers": {
-            "interactive-feedback-mcp": {
-              "command": "uv",
-              "args": [
-                "--directory",
-                "/Users/fabioferreira/Dev/scripts/interactive-feedback-mcp",
-                "run",
-                "server.py"
-              ],
-              "timeout": 600,
-              "autoApprove": [
-                "interactive_feedback"
-              ]
-            }
-          }
-        }
-        ```
-    *   You might use a server identifier like `interactive-feedback-mcp` when configuring it in Cursor.
+3. **Configure in Cursor:**
+   
+   Add to your `mcp.json`:
+   ```json
+   {
+     "mcpServers": {
+       "interactive-feedback-mcp": {
+         "command": "uv",
+         "args": [
+           "--directory",
+           "/path/to/interactive-feedback-mcp",
+           "run",
+           "server_tkinter.py"
+         ],
+         "timeout": 600,
+         "autoApprove": ["interactive_feedback"]
+       }
+     }
+   }
+   ```
 
-### For Cline / Windsurf
+4. **Add Prompt Rule:**
+   ```
+   Whenever you want to ask a question, always call the MCP `interactive_feedback`.
+   Whenever you're about to complete a user request, call the MCP `interactive_feedback` instead of simply ending the process. Keep calling MCP until the user's feedback is empty, then end the request.
+   ```
 
-Similar setup principles apply. You would configure the server command (e.g., `uv run server.py` with the correct `--directory` argument pointing to the project directory) in the respective tool's MCP settings, using `interactive-feedback-mcp` as the server identifier.
+## 🔧 Configuration
 
-## Development
+### Settings Storage
+- **Tkinter Version**: JSON-based settings in platform-specific directories
+- **PySide6 Version**: Qt's QSettings (registry/plist files)
 
-To run the server in development mode with a web interface for testing:
+### Project-specific Settings
+- Command to run
+- Auto-execute on startup
+- Command section visibility
+- Window geometry and state
 
-```sh
-uv run fastmcp dev server.py
+## 🎯 Usage Examples
+
+### Code Review
+```
+AI: "I've refactored calculateTotal(). Would you like to review?"
+→ UI appears → Run tests → Enter feedback → Submit
+AI: "Thanks! I'll fix the issues you mentioned."
 ```
 
-This will open a web interface and allow you to interact with the MCP tools for testing.
+### Feature Development
+```
+AI: "I've implemented login feature. Want to test?"
+→ UI appears → Run "npm test" → Enter feedback → Submit
+AI: "I'll improve based on your feedback."
+```
 
-## Available tools
+## 🛠️ Development
+
+### Test the UI directly:
+```bash
+uv run python test_ui_direct.py
+```
+
+### Run server in development mode:
+```bash
+uv run fastmcp dev server_tkinter.py
+```
+
+### Test MCP client:
+```bash
+uv run python test_client.py
+```
+
+## 📁 File Structure
+
+```
+interactive-feedback-mcp/
+├── server_tkinter.py          # MCP Server (Tkinter - Recommended)
+├── feedback_ui_tkinter.py     # UI (Tkinter)
+├── settings_manager.py        # Settings Manager
+├── server.py                  # MCP Server (PySide6 - Original)
+├── feedback_ui.py             # UI (PySide6)
+├── mcp.json                   # Cursor configuration template
+├── COMPLETE_GUIDE.md          # Comprehensive usage guide
+├── CURSOR_SETUP.md            # Cursor setup guide
+└── test_*.py                  # Test files
+```
+
+## 🔍 Troubleshooting
+
+### UI not showing:
+```bash
+# Test tkinter
+uv run python -c "import tkinter; print('OK')"
+
+# Test UI directly
+uv run python test_ui_direct.py
+```
+
+### Server not running:
+```bash
+# Test server
+uv run python server_tkinter.py
+
+# Check logs
+uv run fastmcp dev server_tkinter.py
+```
+
+## 📚 Documentation
+
+- **[Complete Guide](COMPLETE_GUIDE.md)** - Comprehensive usage guide
+- **[Cursor Setup](CURSOR_SETUP.md)** - Cursor configuration guide
+- **[Feature Comparison](FEATURE_COMPARISON_UPDATED.md)** - Detailed feature analysis
+
+## 🆚 Version Comparison
+
+| Feature | PySide6 | Tkinter | Notes |
+|---------|---------|---------|-------|
+| **UI Components** | ✅ | ✅ | 100% equivalent |
+| **Core Functionality** | ✅ | ✅ | 100% equivalent |
+| **Settings Persistence** | ✅ | ✅ | 100% equivalent |
+| **Cross-platform** | ⚠️ | ✅ | Tkinter better |
+| **Dependencies** | ❌ | ✅ | Tkinter lighter |
+| **Performance** | ✅ | ✅ | Equivalent |
+
+## 🎉 Benefits
+
+- **Save Time**: Less back-and-forth with AI
+- **Reduce Costs**: Fewer premium requests
+- **Improve Quality**: Direct, specific feedback
+- **Increase Efficiency**: Smoother workflow
+
+## Available Tools
 
 Here's an example of how the AI assistant would call the `interactive_feedback` tool:
 
@@ -116,3 +218,7 @@ If you find this Interactive Feedback MCP useful, the best way to show appreciat
 For any questions, suggestions, or if you just want to share how you're using it, feel free to reach out on X!
 
 Also, check out [dotcursorrules.com](https://dotcursorrules.com/) for more resources on enhancing your AI-assisted development workflow.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
