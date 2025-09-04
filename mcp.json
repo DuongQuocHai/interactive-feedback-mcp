@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "interactive-feedback-mcp": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/btk0092/Documents/mcp/interactive-feedback-mcp",
+        "run",
+        "server_tkinter.py"
+      ],
+      "timeout": 600,
+      "autoApprove": [
+        "interactive_feedback"
+      ]
+    }
+  }
+}
